@@ -9,6 +9,8 @@ const helper = require('./helper');
 const quests = require('./quests');
 const ask = require('./possibleTeams');
 
+const jsonTeam = require('./preparedJsonTeam');
+
 // LOAD MY CARDS
 async function getCards() {
     const myCards = await user.getPlayerCards(process.env.ACCOUNT.split('@')[0]) //split to prevent email use
@@ -56,14 +58,17 @@ async function startBotPlayMatch(page, myCards, quest) {
 
     await page.click('#menu_item_battle').catch(e=>console.log('Battle not available'));
 
-    console.log('Quest: ', quest);
+
+    //собирательство квестиков
+
+    // console.log('Quest: ', quest);
     //if quest done claim reward
-    try {
-        await page.waitForSelector('#quest_claim_btn', { timeout: 5000 })
-            .then(button => button.click());
-    } catch (e) {
-        console.log('no quest reward to be claimed')
-    }
+    // try {
+    //     await page.waitForSelector('#quest_claim_btn', { timeout: 5000 })
+    //         .then(button => button.click());
+    // } catch (e) {
+    //     console.log('no quest reward to be claimed')
+    // }
 
     await page.waitForTimeout(3000);
 
@@ -98,17 +103,18 @@ async function startBotPlayMatch(page, myCards, quest) {
         myCards: myCards
     }
     await page.waitForTimeout(2000);
-    const possibleTeams = await ask.possibleTeams(matchDetails).catch(e=>console.log('Error from possible team API call: ',e));
 
-    if (possibleTeams && possibleTeams.length) {
-        console.log('Possible Teams: ', possibleTeams.length, '\n', possibleTeams);
-    } else {
-        console.log('Error:', matchDetails, possibleTeams)
-        throw new Error('NO TEAMS available to be played');
-    }
-    
+    // const possibleTeams = await ask.possibleTeams(matchDetails).catch(e=>console.log('Error from possible team API call: ',e));
+    // if (possibleTeams && possibleTeams.length) {
+    //     console.log('Possible Teams: ', possibleTeams.length, '\n', possibleTeams);
+    // } else {
+    //     console.log('Error:', matchDetails, possibleTeams)
+    //     throw new Error('NO TEAMS available to be played');
+    // }
     //TEAM SELECTION
-    const teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
+    // const teamToPlay = await ask.teamSelection(possibleTeams, matchDetails, quest);
+
+    const teamToPlay = await jsonTeam.makeTeam(matchDetails.mana);
 
     if (teamToPlay) {
         page.click('.btn--create-team')[0];
@@ -123,7 +129,7 @@ async function startBotPlayMatch(page, myCards, quest) {
             await page.waitForXPath(`//div[@data-original-title="${helper.teamActualSplinterToPlay(teamToPlay.cards)}"]`, { timeout: 8000 }).then(selector => selector.click())
         }
         await page.waitForTimeout(5000);
-        for (i = 1; i <= 6; i++) {
+        for (i = 0; i < teamToPlay.cards.length; i++) {
             console.log('play: ', teamToPlay.cards[i].toString())
             await teamToPlay.cards[i] ? page.waitForXPath(`//div[@card_detail_id="${teamToPlay.cards[i].toString()}"]`, { timeout: 10000 }).then(selector => selector.click()) : console.log('nocard ', i);
             await page.waitForTimeout(1000);
@@ -147,11 +153,13 @@ async function startBotPlayMatch(page, myCards, quest) {
 }
 
 // 1200000 === 20 MINUTES INTERVAL BETWEEN EACH MATCH
-const sleepingTime = 1200000;
+// const sleepingTime = 1200000;
+
+const sleepingTime = 10000;
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true
+        headless: false
     }); // default is true
     const page = await browser.newPage();
 

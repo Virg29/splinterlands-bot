@@ -1,0 +1,38 @@
+[
+	{
+		"against":"earth",
+		"decks":[
+
+		]
+	},
+	{
+		"against": "water",
+		"decks":[
+
+		]
+	},
+	{
+		"against": "life",
+		"decks":[
+
+		]
+	},
+	{
+		"against": "fire",
+		"decks":[
+
+		]
+	},
+	{
+		"against": "death",
+		"decks":[
+
+		]
+	},
+	{
+		"against": "dragon",
+		"decks":[
+			
+		]
+	}
+]
