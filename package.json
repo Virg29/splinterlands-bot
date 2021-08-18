@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "create_decks": "node ./utils/createDecks.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "dimas-kmeans": "^1.0.3",
     "dotenv": "^8.2.0",
     "hierarchical-clustering": "^1.1.0",
+    "keypress": "^0.2.1",
     "minimist": ">=1.2.3",
     "node-fetch": "^2.6.1",
     "pg": "^8.0.3",

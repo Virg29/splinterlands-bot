@@ -1,7 +1,7 @@
 const jsonTeams = require("./decks/"+process.env.MANADECK);
 const jsonTeamsAgainstRules = require("./decks/"+process.env.SUMMONERDECK);
 
-const summonerTypes = ["earth","fire","dragon","water","life","death"]
+const summonerTypes = ["earth","fire","dragon","water","life","death"];
 
 const makeTeam = async (mana)=>{
 	var bestTeam = null;
